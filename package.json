@@ -18,5 +18,14 @@
   "description": "This is second repo",
   "main": "app.js",
   "author": "Janumula Sailaxman",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Laxman2916/db00janumula.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Laxman2916/db00janumula/issues"
+  },
+  "homepage": "https://github.com/Laxman2916/db00janumula#readme"
 }

@@ -9,7 +9,9 @@ var usersRouter = require('./routes/users');
 var vehicleRouter = require('./routes/vehicle');
 var addmodsRouter = require('./routes/addmods');
 var selectorRouter = require('./routes/selector');
-var Vehicle = require("./models/vehicle"); 
+var vehicle = require("./models/vehicle"); 
+var resourceRouter = require('./routes/resource');
+
 var app = express();
 
 // view engine setup
@@ -27,23 +29,8 @@ app.use('/users', usersRouter);
 app.use('/vehicle', vehicleRouter);
 app.use('/addmods', addmodsRouter);
 app.use('/selector', selectorRouter);
+app.use('/resource', resourceRouter);
 
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
 const connectionString = process.env.MONGO_CON
 
 mongoose = require('mongoose');
@@ -51,20 +38,42 @@ mongoose.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: t
 
 async function recreateDB(){
   // Delete everything
-  await Vehicle.deleteMany(); 
+  await vehicle.deleteMany();
+  let instance1 = new vehicle({Brand:"lincoln", price:10,size:"large"});
+  instance1.save( function(err,doc) {
+  if(err) return console.error(err);
+  console.log("First object saved")
+  });
  
-  var results = [{"Brand":"lincoln","price":'10',"size":'large'},
-                 {"Brand":"tesla","price":'7',"size":'small'},
-                 {"Brand":"audi", "price":'15',"size":'large'}]
+  let instance2 = new vehicle({Brand:"tesla", price:7,size:"small"});
+  instance2.save( function(err,doc) {
+  if(err) return console.error(err);
+  console.log("Second object saved")
+  });
  
- for(i in results){
-  let instance = new Vehicle({Brand: results[i]["Brand"], price: results[i]["price"], size:results[i]["size"]});
-   instance.save( function(err,doc) {
-     if(err) return console.error(err);
-     console.log("object added.")
-     });
- } 
- } 
+  let instance3 = new vehicle({Brand:"audi", price:15,size:"large"});
+  instance3.save( function(err,doc) {
+  if(err) return console.error(err);
+  console.log("Third object saved")
+  });
+ 
+ }
  let reseed = true;
- if (reseed) { recreateDB();} 
-module.exports = app;
+ if (reseed) { recreateDB();}
+ // catch 404 and forward to error handler
+ app.use(function(req, res, next) {
+   next(createError(404));
+ });
+ 
+ // error handler
+ app.use(function(err, req, res, next) {
+   // set locals, only providing error in development
+   res.locals.message = err.message;
+   res.locals.error = req.app.get('env') === 'development' ? err : {};
+ 
+   // render the error page
+   res.status(err.status || 500);
+   res.render('error');
+ });
+ 
+ module.exports = app;
